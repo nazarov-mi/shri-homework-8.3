@@ -1,11 +1,30 @@
 import fw from 'fw'
-import sendToServer from './sendToServer'
 
+/**
+ * Класс для хранения и обработки входящих данных,
+ * наследует класс fw.Model
+ * @class
+ * @extends fw.Model
+ */
 class Model extends fw.Model {
-	constructor (state) {
-		super(state)
+
+	/**
+	 * Создаёт экземпляр Model
+	 * @constructs
+	 */
+	constructor () {
+		super({
+			messages: [],
+			data: ''
+		})
 	}
 
+	/**
+	 * Добавляет новое сообщение к состоянию модели
+	 * и генерирует событие message-added
+	 * @param {String} text - текст сообщение
+	 * @return {Model} Возвращает текущий экземпляр класса
+	 */
 	addMessage (text) {
 		const messages = this.state.messages || []
 
@@ -15,28 +34,25 @@ class Model extends fw.Model {
 			messages
 		})
 		this.fire('message-added', text)
+
+		return this
 	}
 
+	/**
+	 * Изменяет поле data в состоянии модели
+	 * и генерирует событие data-changed
+	 * @param  {String} data - новое значение поля data
+	 * @return {Model} Возвращает текущий экземпляр класса
+	 */
 	changeData (data) {
 		this.changeState({
 			data
 		})
 		this.fire('data-changed', data)
 
-		this._send(data)
-	}
-
-	async _send (data) {
-		try {
-			const message = await sendToServer(data)
-			this.addMessage(message)
-		} catch (e) {
-			this.addMessage(e.message)
-		}
+		return this
 	}
 }
 
-export default new Model({
-	messages: [],
-	data: ''
-})
+// Возвращаем новый экземпляр модели
+export default new Model()

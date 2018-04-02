@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,9 +70,9 @@
 "use strict";
 
 
-module.exports.View = __webpack_require__(6);
-module.exports.Model = __webpack_require__(8);
-module.exports.Presenter = __webpack_require__(9);
+module.exports.View = __webpack_require__(8);
+module.exports.Model = __webpack_require__(10);
+module.exports.Presenter = __webpack_require__(11);
 
 /***/ }),
 /* 1 */
@@ -91,10 +91,6 @@ var _fw = __webpack_require__(0);
 
 var _fw2 = _interopRequireDefault(_fw);
 
-var _sendToServer = __webpack_require__(4);
-
-var _sendToServer2 = _interopRequireDefault(_sendToServer);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -103,14 +99,35 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Класс для хранения и обработки входящих данных,
+ * наследует класс fw.Model
+ * @class
+ * @extends fw.Model
+ */
 var Model = function (_fw$Model) {
 	_inherits(Model, _fw$Model);
 
-	function Model(state) {
+	/**
+  * Создаёт экземпляр Model
+  * @constructs
+  */
+	function Model() {
 		_classCallCheck(this, Model);
 
-		return _possibleConstructorReturn(this, (Model.__proto__ || Object.getPrototypeOf(Model)).call(this, state));
+		return _possibleConstructorReturn(this, (Model.__proto__ || Object.getPrototypeOf(Model)).call(this, {
+			messages: [],
+			data: ''
+		}));
 	}
+
+	/**
+  * Добавляет новое сообщение к состоянию модели
+  * и генерирует событие message-added
+  * @param {String} text - текст сообщение
+  * @return {Model} Возвращает текущий экземпляр класса
+  */
+
 
 	_createClass(Model, [{
 		key: 'addMessage',
@@ -123,7 +140,17 @@ var Model = function (_fw$Model) {
 				messages: messages
 			});
 			this.fire('message-added', text);
+
+			return this;
 		}
+
+		/**
+   * Изменяет поле data в состоянии модели
+   * и генерирует событие data-changed
+   * @param  {String} data - новое значение поля data
+   * @return {Model} Возвращает текущий экземпляр класса
+   */
+
 	}, {
 		key: 'changeData',
 		value: function changeData(data) {
@@ -132,139 +159,20 @@ var Model = function (_fw$Model) {
 			});
 			this.fire('data-changed', data);
 
-			this._send(data);
-		}
-	}, {
-		key: '_send',
-		value: async function _send(data) {
-			try {
-				var message = await (0, _sendToServer2.default)(data);
-				this.addMessage(message);
-			} catch (e) {
-				this.addMessage(e.message);
-			}
+			return this;
 		}
 	}]);
 
 	return Model;
 }(_fw2.default.Model);
 
-exports.default = new Model({
-	messages: [],
-	data: ''
-});
+// Возвращаем новый экземпляр модели
+
+
+exports.default = new Model();
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _Presenter = __webpack_require__(10);
-
-var _Presenter2 = _interopRequireDefault(_Presenter);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_Presenter2.default.init();
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _fw = __webpack_require__(0);
-
-var _fw2 = _interopRequireDefault(_fw);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var $ = function $(selector, target) {
-	return (target || document).querySelector(selector);
-};
-
-var View = function (_fw$View) {
-	_inherits(View, _fw$View);
-
-	function View() {
-		_classCallCheck(this, View);
-
-		return _possibleConstructorReturn(this, (View.__proto__ || Object.getPrototypeOf(View)).call(this));
-	}
-
-	_createClass(View, [{
-		key: 'init',
-		value: function init(target) {
-			var _this2 = this;
-
-			this._$apply = $('.view-stub__apply', target);
-			this._$input = $('.view-stub__input', target);
-			this._$label = $('.view-stub__label', target);
-
-			this._$apply.addEventListener('click', function () {
-				var data = _this2._$input.value;
-
-				_this2.fire('submit', data);
-				_this2._$input.value = '';
-			});
-		}
-	}, {
-		key: 'render',
-		value: function render(data) {
-			this.renderMessages(data.messages);
-		}
-	}, {
-		key: 'renderMessages',
-		value: function renderMessages(messages) {
-			this._$label.innerHTML = '<p>' + messages.join('</p><p>') + '</p>';
-		}
-	}]);
-
-	return View;
-}(_fw2.default.View);
-
-exports.default = new View();
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-exports.default = function (data) {
-	return new Promise(function (resolve, reject) {
-		setTimeout(function () {
-			if (Math.random() > .3) {
-				resolve("\u0421\u0435\u0440\u0432\u0435\u0440 \u043F\u0440\u0438\u043D\u044F\u043B \u0434\u0430\u043D\u043D\u044B\u0435 \xAB" + data + "\xBB");
-			} else {
-				reject(new Error("\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u044C \u0434\u0430\u043D\u043D\u044B\u0435 \xAB" + data + "\xBB"));
-			}
-		}, 500);
-	});
-};
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -276,11 +184,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /* Abstract class */
 /* eslint-disable class-methods-use-this, no-unused-vars */
-var AbstractClassError = __webpack_require__(7);
+var AbstractClassError = __webpack_require__(3);
 
 /**
- * Класс реализует шаблон проектирования наблюдатель —
- * механизма подписки на события и рассылки данных между подписчиками.
+ * Класс реализует механизма подписки на события и рассылки данных между подписчиками.
  * @abstract
  * @class
  */
@@ -302,8 +209,12 @@ var EventDispatcher = function () {
 	}
 
 	/**
-  * Подписывает функцию обратного вызова, если она не была подписана ранее
+  * Подписывает функцию обратного вызова на события определённого типа,
+  * если она не была подписана ранее
+  * @param  {String} type - тип события
   * @param  {Function} callback - функция обратного вызова
+  * @param  {Boolean} greatPriority - если является true —
+  * функция обратного вызова добавляется в начало очереди
   * @return {EventDispatcher} Возвращает текущий экземпляр класса
   */
 
@@ -311,6 +222,8 @@ var EventDispatcher = function () {
 	_createClass(EventDispatcher, [{
 		key: 'on',
 		value: function on(type, callback) {
+			var greatPriority = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
 			if (typeof callback === 'function') {
 				var callbacks = this._listeners[type];
 
@@ -322,7 +235,11 @@ var EventDispatcher = function () {
 				var index = callbacks.indexOf(callback);
 
 				if (index < 0) {
-					callbacks.push(callback);
+					if (greatPriority) {
+						callbacks.unshift(callback);
+					} else {
+						callbacks.push(callback);
+					}
 				}
 			}
 
@@ -330,7 +247,8 @@ var EventDispatcher = function () {
 		}
 
 		/**
-   * Отписывает функцию обратного вызова от событий
+   * Отписывает функцию обратного вызова от событий определённого типа,
+   * @param  {String} type - тип события
    * @param  {Function} callback - функция обратного вызова
    * @return {EventDispatcher} Возвращает текущий экземпляр класса
    */
@@ -352,7 +270,9 @@ var EventDispatcher = function () {
 		}
 
 		/**
-   * Рассылает данные между всему функциями обратного вызова
+   * Рассылает данные между всему функциями обратного вызова,
+   * подписанными на событие определённого типа
+   * @param  {String} type - тип события
    * @param  {any} payload - данные для рассылки
    * @return {EventDispatcher} Возвращает текущий экземпляр класса
    */
@@ -378,67 +298,7 @@ var EventDispatcher = function () {
 module.exports = EventDispatcher;
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/* Abstract class */
-/* eslint-disable class-methods-use-this, no-unused-vars */
-var EventDispatcher = __webpack_require__(5);
-
-var View = function (_EventDispatcher) {
-	_inherits(View, _EventDispatcher);
-
-	function View() {
-		_classCallCheck(this, View);
-
-		var _this = _possibleConstructorReturn(this, (View.__proto__ || Object.getPrototypeOf(View)).call(this));
-
-		_this._target = null;
-		return _this;
-	}
-
-	_createClass(View, [{
-		key: 'mount',
-		value: function mount(target, initData) {
-			this._target = target;
-			this.init(target);
-			this.render(initData);
-		}
-	}, {
-		key: 'init',
-		value: function init(target) {
-			// abstract
-		}
-	}, {
-		key: 'render',
-		value: function render(data) {
-			// abstract
-		}
-	}, {
-		key: 'model',
-		get: function get() {
-			return this._model;
-		}
-	}]);
-
-	return View;
-}(EventDispatcher);
-
-module.exports = View;
-
-/***/ }),
-/* 7 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -465,71 +325,7 @@ function AbstractClassError(className) {
 module.exports = AbstractClassError;
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var EventDispatcher = __webpack_require__(5);
-
-var Model = function (_EventDispatcher) {
-	_inherits(Model, _EventDispatcher);
-
-	function Model(state) {
-		_classCallCheck(this, Model);
-
-		var _this = _possibleConstructorReturn(this, (Model.__proto__ || Object.getPrototypeOf(Model)).call(this));
-
-		_this._state = state;
-		return _this;
-	}
-
-	_createClass(Model, [{
-		key: 'changeState',
-		value: function changeState(data) {
-			Object.assign(this._state, data);
-			this.fire('change', this._state);
-		}
-	}, {
-		key: 'state',
-		get: function get() {
-			return this._state;
-		}
-	}]);
-
-	return Model;
-}(EventDispatcher);
-
-module.exports = Model;
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Presenter = function Presenter(view) {
-	_classCallCheck(this, Presenter);
-
-	this._view = view;
-};
-
-module.exports = Presenter;
-
-/***/ }),
-/* 10 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -545,13 +341,13 @@ var _fw = __webpack_require__(0);
 
 var _fw2 = _interopRequireDefault(_fw);
 
-var _View = __webpack_require__(3);
-
-var _View2 = _interopRequireDefault(_View);
-
 var _Model = __webpack_require__(1);
 
 var _Model2 = _interopRequireDefault(_Model);
+
+var _$ = __webpack_require__(5);
+
+var _$2 = _interopRequireDefault(_$);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -561,9 +357,211 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Класс для работы с представлением,
+ * наследует абстрактный класс fw.View
+ * @class
+ * @extends fw.View
+ */
+var View = function (_fw$View) {
+	_inherits(View, _fw$View);
+
+	/**
+  * Создаёт экземпляр View
+  * @constructs
+  */
+	function View() {
+		_classCallCheck(this, View);
+
+		return _possibleConstructorReturn(this, (View.__proto__ || Object.getPrototypeOf(View)).call(this));
+	}
+
+	/**
+  * Запускает инициализацию представления
+  * @param {HTMLElement} target - родительский HTML элемент
+  */
+
+
+	_createClass(View, [{
+		key: 'init',
+		value: function init(target) {
+			var _this2 = this;
+
+			this._$apply = (0, _$2.default)('.view-stub__apply', target);
+			this._$input = (0, _$2.default)('.view-stub__input', target);
+			this._$label = (0, _$2.default)('.view-stub__label', target);
+
+			this._$apply.addEventListener('click', function () {
+				var data = _this2._$input.value;
+
+				_this2.fire('submit', data);
+				_this2._$input.value = '';
+			});
+		}
+
+		/**
+   * Запускает отрисовку представления
+   * @param {Object} data - данные для отрисовки
+   */
+
+	}, {
+		key: 'render',
+		value: function render(data) {
+			this.renderMessages(data.messages);
+		}
+
+		/**
+   * Запускает отрисовку списка сообщений
+   * @param {Array.<String>} messages - список сообщений для отрисовки
+   */
+
+	}, {
+		key: 'renderMessages',
+		value: function renderMessages(messages) {
+			this._$label.innerHTML = '<p>' + messages.join('</p><p>') + '</p>';
+		}
+	}]);
+
+	return View;
+}(_fw2.default.View);
+
+// Возвращаем новый экземпляр представления
+
+
+exports.default = new View();
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+/**
+ * Метод для работы с DOM-дереом,
+ * ищет элемент по селектору
+ * @param  {String} selector - селектор для поиска
+ * @param  {HTMLElement} target - root элемент в котором выполнится поиск
+ * @return {HTMLElement|null} Возвращает найденный элемент или null
+ */
+exports.default = function (selector, target) {
+  return (target || document).querySelector(selector);
+};
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Presenter = __webpack_require__(7);
+
+var _Presenter2 = _interopRequireDefault(_Presenter);
+
+var _Model = __webpack_require__(1);
+
+var _Model2 = _interopRequireDefault(_Model);
+
+var _View = __webpack_require__(4);
+
+var _View2 = _interopRequireDefault(_View);
+
+var _$ = __webpack_require__(5);
+
+var _$2 = _interopRequireDefault(_$);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function initLog() {
+	var $log = (0, _$2.default)('.log');
+
+	// Функция логирования
+	function log(data) {
+		$log.innerHTML += data;
+	}
+
+	// Логирование модели
+
+	// Старое состояние
+	var oldState = JSON.stringify(_Model2.default.state);
+
+	_Model2.default.on('change', function (state) {
+		var newState = JSON.stringify(state);
+		var html = ['<p><b>В моделе изменились данные</b></p>', '<p>+ Старое состояние</p>', '<pre>' + oldState + '</pre>', '<p>+ Новое состояние</p>', '<pre>' + newState + '</pre>'].join('');
+
+		log(html);
+
+		oldState = newState;
+	});
+
+	// Логирование представления
+	_View2.default.on('submit', function (data) {
+		var html = ['<p><b>Представление сгенерировало событие<br>отправки формы</b></p>', '<p>+ Переданные данные</p>', '<pre>' + data + '</pre>'].join('');
+
+		log(html);
+	});
+}
+
+initLog();
+
+// Инициализация Presenter'а
+_Presenter2.default.init();
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _fw = __webpack_require__(0);
+
+var _fw2 = _interopRequireDefault(_fw);
+
+var _View = __webpack_require__(4);
+
+var _View2 = _interopRequireDefault(_View);
+
+var _Model = __webpack_require__(1);
+
+var _Model2 = _interopRequireDefault(_Model);
+
+var _sendToServer = __webpack_require__(12);
+
+var _sendToServer2 = _interopRequireDefault(_sendToServer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Класс для работы с представлением,
+ * наследует абстрактный класс fw.Presenter
+ * @class
+ * @extends fw.Presenter
+ */
 var Presenter = function (_fw$Presenter) {
 	_inherits(Presenter, _fw$Presenter);
 
+	/**
+  * Создаёт экземпляр Presenter
+  * @constructs
+  */
 	function Presenter() {
 		_classCallCheck(this, Presenter);
 
@@ -573,26 +571,310 @@ var Presenter = function (_fw$Presenter) {
 		return _this;
 	}
 
+	/**
+  * Запускает инициализацию
+  */
+
+
 	_createClass(Presenter, [{
 		key: 'init',
 		value: function init() {
+			var _this2 = this;
+
 			var view = this._view;
 			var model = this._model;
 
-			view.mount(document, _Model2.default.state);
+			view.mount(document, model.state);
 			view.on('submit', function (data) {
 				return model.changeData(data);
 			});
-			model.on('message-added', function (data) {
+			model.on('message-added', function () {
 				return view.renderMessages(model.state.messages);
 			});
+			model.on('data-changed', function (data) {
+				return _this2._send(data);
+			});
+		}
+
+		/**
+   * Отправляет данные на сервер
+   * @param {String} data - данные для отправки
+   */
+
+	}, {
+		key: '_send',
+		value: async function _send(data) {
+			var message = void 0;
+
+			try {
+				message = await (0, _sendToServer2.default)(data);
+			} catch (e) {
+				message = e.message;
+			}
+
+			this._model.addMessage(message);
 		}
 	}]);
 
 	return Presenter;
 }(_fw2.default.Presenter);
 
+// Возвращаем новый экземпляр Presenter'а
+
+
 exports.default = new Presenter();
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/* Abstract class */
+/* eslint-disable class-methods-use-this, no-unused-vars */
+var EventDispatcher = __webpack_require__(2);
+var AbstractClassError = __webpack_require__(3);
+var AbstractMethodError = __webpack_require__(9);
+
+/**
+ * Абстрактный класс для работы с представлением
+ * и отображения данных, переданных моделью
+ * @abstract
+ * @class
+ * @extends EventDispatcher
+ */
+
+var View = function (_EventDispatcher) {
+	_inherits(View, _EventDispatcher);
+
+	/**
+  * Создаёт экземпляр View
+  * @constructs
+  */
+	function View() {
+		_classCallCheck(this, View);
+
+		var _this = _possibleConstructorReturn(this, (View.__proto__ || Object.getPrototypeOf(View)).call(this));
+
+		if (_this.constructor === View) {
+			throw new AbstractClassError('View');
+		}
+
+		_this._target = null;
+		return _this;
+	}
+
+	/**
+  * Устанавливает родительский HTML элемент,
+  * после чего запускает инициализацию и отрисовку представления
+  * @param  {HTMLElement} target - родительский HTML элемент
+  * @param  {Object} initData - данные первой отрисовки
+  * @return {View} Возвращает текущий экземпляр класса
+  */
+
+
+	_createClass(View, [{
+		key: 'mount',
+		value: function mount(target, initData) {
+			this._target = target;
+			this.init(target);
+			this.render(initData);
+
+			return this;
+		}
+
+		/**
+   * Запускает инициализацию представления
+   * @abstract
+   * @param {HTMLElement} target - родительский HTML элемент
+   */
+
+	}, {
+		key: 'init',
+		value: function init(target) {
+			throw new AbstractMethodError('View', 'init');
+		}
+
+		/**
+   * Запускает отрисовку представления
+   * @abstract
+   * @param {Object} data - данные для отрисовки
+   */
+
+	}, {
+		key: 'render',
+		value: function render(data) {
+			throw new AbstractMethodError('View', 'render');
+		}
+	}]);
+
+	return View;
+}(EventDispatcher);
+
+module.exports = View;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Класс ошибки вызова абстрактного метода
+ * @class
+ */
+var AbstractMethodError =
+
+/**
+ * Создаёт экземпляр AbstractMethodError
+ * @constructs
+ */
+function AbstractMethodError(className, methodName) {
+	_classCallCheck(this, AbstractMethodError);
+
+	throw new Error("\u041D\u0435 \u0440\u0435\u0430\u043B\u0438\u0437\u043E\u0432\u0430\u043D \u043C\u0435\u0442\u043E\u0434 " + methodName + " \u043A\u043B\u0430\u0441\u0441\u0430 " + className);
+};
+
+module.exports = AbstractMethodError;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var EventDispatcher = __webpack_require__(2);
+
+/**
+ * Класс реализует модель для хранения и обработки входящих данных
+ * @class
+ * @extends EventDispatcher
+ */
+
+var Model = function (_EventDispatcher) {
+	_inherits(Model, _EventDispatcher);
+
+	/**
+  * Создаёт экземпляр Model
+  * @constructs
+  * @param {Object} - внутреннее состояние модели
+  */
+	function Model(state) {
+		_classCallCheck(this, Model);
+
+		var _this = _possibleConstructorReturn(this, (Model.__proto__ || Object.getPrototypeOf(Model)).call(this));
+
+		_this._state = Object.assign({}, state);
+		return _this;
+	}
+
+	/**
+  * Добавляет переданные данные к состоянию модели
+  * @param  {Object} data - полученные данные
+  * @return {Object} Возвращает изменённое состояние модели
+  */
+
+
+	_createClass(Model, [{
+		key: 'changeState',
+		value: function changeState(data) {
+			Object.assign(this._state, data);
+			this.fire('change', this._state);
+
+			return this._state;
+		}
+
+		/**
+   * Возвращает внутреннее состояние модели
+   * @readonly
+   * @return {Object}
+   */
+
+	}, {
+		key: 'state',
+		get: function get() {
+			return this._state;
+		}
+	}]);
+
+	return Model;
+}(EventDispatcher);
+
+module.exports = Model;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Класс для работы с представление
+ * @abstract
+ * @class
+ */
+var Presenter =
+
+/**
+ * Создаёт экземпляр Presenter
+ * @constructs
+ * @param {View} view - экземпляр представления
+ */
+function Presenter(view) {
+	_classCallCheck(this, Presenter);
+
+	this._view = view;
+};
+
+module.exports = Presenter;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+// Отправка данных на сервер
+exports.default = function (data) {
+	return new Promise(function (resolve, reject) {
+		setTimeout(function () {
+			if (Math.random() > .3) {
+				resolve("\u0421\u0435\u0440\u0432\u0435\u0440 \u043F\u0440\u0438\u043D\u044F\u043B \u0434\u0430\u043D\u043D\u044B\u0435 \xAB" + data + "\xBB");
+			} else {
+				reject(new Error("\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u044C \u0434\u0430\u043D\u043D\u044B\u0435 \xAB" + data + "\xBB"));
+			}
+		}, 500);
+	});
+};
 
 /***/ })
 /******/ ]);
