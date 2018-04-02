@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>AbstractClassError - Documentation</title>
+    <title>Model.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,137 +29,62 @@
 
 <div id="main">
     
-    <h1 class="page-title">AbstractClassError</h1>
+    <h1 class="page-title">Model.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        AbstractClassError
-        </h2>
-        
-            <div class="class-description"><p>Класс ошибки создания абстракного класса</p></div>
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const EventDispatcher = require('./EventDispatcher')
 
-<article>
-    <div class="container-overview">
-    
-        
-<div class="section-method">
+/**
+ * Класс реализует модель для хранения и обработки входящих данных
+ * @class
+ * @extends EventDispatcher
+ */
+class Model extends EventDispatcher {
 
-    
-    <h2>Constructor</h2>
-    
+	/**
+	 * Создаёт экземпляр Model
+	 * @constructs
+	 * @param {Object} - внутреннее состояние модели
+	 */
+	constructor (state) {
+		super()
 
-    <h4 class="name" id="AbstractClassError"><span class="type-signature"></span>new AbstractClassError<span class="signature">()</span><span class="type-signature"></span></h4>
+		this._state = Object.assign({}, state)
+	}
 
-    
+	/**
+	 * Добавляет переданные данные к состоянию модели
+	 * @param  {Object} data - полученные данные
+	 * @return {Object} Возвращает изменённое состояние модели
+	 */
+	changeState (data) {
+		Object.assign(this._state, data)
+		this.fire('change', this._state)
 
-
-
-<div class="description">
-    <p>Создаёт экземпляр AbstractClassError</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="errors_AbstractClassError.js.html">errors/AbstractClassError.js</a>, <a href="errors_AbstractClassError.js.html#line5">line 5</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
+		return this._state
+	}
 
 
+	/**
+	 * Возвращает внутреннее состояние модели
+	 * @readonly
+	 * @return {Object}
+	 */
+	get state () {
+		return this._state
+	}
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+module.exports = Model</code></pre>
+        </article>
+    </section>
 
 
 

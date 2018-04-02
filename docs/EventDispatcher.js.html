@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>AbstractClassError - Documentation</title>
+    <title>EventDispatcher.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,137 +29,112 @@
 
 <div id="main">
     
-    <h1 class="page-title">AbstractClassError</h1>
+    <h1 class="page-title">EventDispatcher.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        AbstractClassError
-        </h2>
-        
-            <div class="class-description"><p>Класс ошибки создания абстракного класса</p></div>
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* Abstract class */
+/* eslint-disable class-methods-use-this, no-unused-vars */
+const AbstractClassError = require('./errors/AbstractClassError')
 
-<article>
-    <div class="container-overview">
-    
-        
-<div class="section-method">
+/**
+ * Класс реализует механизма подписки на события и рассылки данных между подписчиками.
+ * @abstract
+ * @class
+ */
+class EventDispatcher {
 
-    
-    <h2>Constructor</h2>
-    
+	/**
+	 * Создаёт экземпляр EventDispatcher
+	 * @constructs
+	 */
+	constructor () {
+		if (this.constructor === EventDispatcher) {
+			throw new AbstractClassError('EventDispatcher')
+		}
 
-    <h4 class="name" id="AbstractClassError"><span class="type-signature"></span>new AbstractClassError<span class="signature">()</span><span class="type-signature"></span></h4>
+		this._listeners = {}
+	}
 
-    
+	/**
+	 * Подписывает функцию обратного вызова на события определённого типа,
+	 * если она не была подписана ранее
+	 * @param  {String} type - тип события
+	 * @param  {Function} callback - функция обратного вызова
+	 * @param  {Boolean} greatPriority - если является true —
+	 * функция обратного вызова добавляется в начало очереди
+	 * @return {EventDispatcher} Возвращает текущий экземпляр класса
+	 */
+	on (type, callback, greatPriority = false) {
+		if (typeof callback === 'function') {
+			let callbacks = this._listeners[type]
 
+			if (!Array.isArray(callbacks)) {
+				callbacks = []
+				this._listeners[type] = callbacks
+			}
 
+			const index = callbacks.indexOf(callback)
 
-<div class="description">
-    <p>Создаёт экземпляр AbstractClassError</p>
-</div>
+			if (index &lt; 0) {
+				if (greatPriority) {
+					callbacks.unshift(callback)
+				} else {
+					callbacks.push(callback)
+				}
+			}
+		}
 
+		return this
+	}
 
+	/**
+	 * Отписывает функцию обратного вызова от событий определённого типа,
+	 * @param  {String} type - тип события
+	 * @param  {Function} callback - функция обратного вызова
+	 * @return {EventDispatcher} Возвращает текущий экземпляр класса
+	 */
+	off (type, callback) {
+		const callbacks = this._listeners[type]
 
+		if (Array.isArray(callbacks)) {
+			const index = callbacks.indexOf(callback)
 
+			if (index >= 0) {
+				callbacks.splice(index, 1)
+			}
+		}
 
-<dl class="details">
+		return this
+	}
 
-    
+	/**
+	 * Рассылает данные между всему функциями обратного вызова,
+	 * подписанными на событие определённого типа
+	 * @param  {String} type - тип события
+	 * @param  {any} payload - данные для рассылки
+	 * @return {EventDispatcher} Возвращает текущий экземпляр класса
+	 */
+	fire (type, payload) {
+		const callbacks = this._listeners[type]
 
-    
+		if (Array.isArray(callbacks)) {
+			callbacks.forEach(callback => callback(payload))
+		}
 
-    
+		return this
+	}
+}
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="errors_AbstractClassError.js.html">errors/AbstractClassError.js</a>, <a href="errors_AbstractClassError.js.html#line5">line 5</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+module.exports = EventDispatcher</code></pre>
+        </article>
+    </section>
 
 
 
